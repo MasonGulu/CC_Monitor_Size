@@ -3,90 +3,201 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>ComputerCraft Monitor Size Calculator</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
+      html,
       body {
+        height: 100%;
+        width: 100%;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        font-weight: 400;
         display: flex;
-        margin: 20px 10px;
-        justify-content: center;
-      }
-
-      .form-group {
-        display: grid;
-        grid-template-columns: 5em 1fr;
-        gap: 0.5em 0em;
         align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        overflow: hidden;
       }
 
-      #container {
+      form {
         display: flex;
         flex-direction: column;
-        gap: 1em;
       }
 
-      #output {
-        font-size: 1.5em;
+      section {
+        display: flex;
+        margin: 0.5vw 0;
+      }
+
+      div {
+        margin: 0 1vw;
+      }
+
+      h1 {
+        font-size: 2.8rem;
+        font-weight: 600;
+        width: 100%;
+        text-align: center;
+      }
+
+      input {
+        width: 100%;
+        min-height: 3rem;
+        border-radius: 4px;
+        padding: 0.5rem;
+        border: 1px solid #838c9a;
+        font-size: 1.125rem;
+      }
+
+      input:hover {
+        border: 1px solid #0067c5;
+      }
+
+      input:focus-visible {
+        border: 2px solid #0067c5;
+        margin: -1px;
+      }
+
+      input.invalid {
+        border: 2px solid #c30000;
+        margin: -1px;
+      }
+
+      label {
+        font-size: 1.125rem;
+        font-weight: 500;
+      }
+
+      .buttonGroup {
+        border: 1px solid #838c9a;
+        border-radius: 4px;
+        display: inline-grid;
+        gap: 0.25rem;
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+        padding: 0.3025rem;
+        margin-left: 1vw;
+      }
+
+      button {
+        border: none;
+        width: 2vw;
+        font-size: 1.125rem;
+        border-radius: 2px;
+        min-height: 2.375rem;
+      }
+
+      button.active {
+        background-color: #0067c5;
+        color: white;
       }
     </style>
-
   </head>
 
   <body>
-    <div id="container">
+    <main>
       <h1>ComputerCraft Monitor Size Calculator</h1>
-      <div class="form-group">
-        <label for="sizex">Size X:</label>
-        <input type="number" min="1" max="25" name="sizex" id="sizex" value="1">
 
-        <label for="sizey">Size Y:</label>
-        <input type="number" min="1" max="25" name="sizey" id="sizey" value="1">
+      <form>
+        <section>
+          <div>
+            <label for="sizeX">Width</label>
+            <input required type="number" name="sizeX" id="sizeX" value="1" />
+          </div>
 
-        <label for="scale">Scale:</label>
-        <select name="scale" id="scale">
-          <option value="0.5">0.5</option>
-          <option value="1" selected>1</option>
-          <option value="1.5">1.5</option>
-          <option value="2">2</option>
-          <option value="2.5">2.5</option>
-          <option value="3">3</option>
-          <option value="3.5">3.5</option>
-          <option value="4">4</option>
-          <option value="4.5">4.5</option>
-          <option value="5">5</option>
-        </select>
-      </div>
-      <div id="output"></div>
-    </div>
+          <div>
+            <label for="sizeY">Height</label>
+            <input required type="number" name="sizeY" id="sizeY" value="1" />
+          </div>
+        </section>
+
+        <section>
+          <div>
+            <label>Scale</label>
+            <section class="buttonGroup">
+              <button>0.5</button>
+              <button class="active">1</button>
+              <button>1.5</button>
+              <button>2</button>
+              <button>2.5</button>
+              <button>3</button>
+              <button>3.5</button>
+              <button>4</button>
+              <button>4.5</button>
+              <button>5</button>
+            </section>
+          </div>
+        </section>
+      </form>
+
+      <hr />
+
+      <output>
+        <p id="chars"><b>Characters: </b></p>
+        <p id="pixels"><b>"Pixels": </b></p>
+      </output>
+
+      <hr />
+    </main>
+
+    <p>This project is open-source <a href="https://github.com/MasonGulu/CC_Monitor_Size/">on GitHub</a>.</p>
 
     <script type="text/javascript">
-      console.log("hello?")
+      const sizeXElement = document.querySelector('#sizeX');
+      const sizeYElement = document.querySelector('#sizeY');
+      const charactersOutputElement = document.querySelector('#chars');
+      const pixelsOutputElement = document.querySelector('#pixels');
+      const scaleButtons = document.querySelectorAll('button');
+      let scale = 1;
 
-      var scale_select = document.getElementById("scale")
-      var y_size = document.getElementById("sizey")
-      var x_size = document.getElementById("sizex")
-      var output = document.getElementById("output")
+      scaleButtons.forEach((button) => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          scaleButtons.forEach((btn) => {
+            btn.classList.remove('active');
+          });
+          button.classList.add('active');
+          scale = parseFloat(button.innerHTML);
+          recalculate();
+        });
+      });
+
+      document.querySelectorAll('input').forEach((v) => v.addEventListener('input', recalculate));
 
       function recalculate() {
-        var w = x_size.value
-        var h = y_size.value
-        var scale = Number(scale_select.value)
-        var x_char_size = Math.round((64 * w - 20) / (6 * scale))
-        var y_char_size = Math.round((64 * h - 20) / (9 * scale))
-        output.innerHTML = "Characters: " + x_char_size + " x " + y_char_size + "<br />\"Pixels\": " + x_char_size * 2 + " x " + y_char_size * 3 + ""
+        let ok = true;
+
+        [sizeX, sizeY].forEach((v) => {
+          if (!parseInt(v.value)) {
+            v.classList.add('invalid');
+            ok = false;
+          } else {
+            v.classList.remove('invalid');
+          }
+        });
+
+        if (!ok) {
+          charactersOutputElement.innerHTML = `<b>Characters: </b>Error`;
+          pixelsOutputElement.innerHTML = `<b>"Pixels": </b>Error`;
+          return;
+        }
+
+        const x = Math.round((64 * sizeX.value - 20) / (6 * scale));
+        const y = Math.round((64 * sizeY.value - 20) / (9 * scale));
+        charactersOutputElement.innerHTML = `<b>Characters: </b>${x} x ${y}`;
+        pixelsOutputElement.innerHTML = `<b>"Pixels": </b>${x * 2} x ${y * 3}`;
       }
 
-      for(var input of [scale_select, x_size, y_size]) {
-        input.addEventListener("change", recalculate)
-        input.addEventListener("input", recalculate);
-      }
-
-      recalculate()
+      recalculate();
     </script>
-
-    <p>This project is open-source <a href="https://monitorsize.madefor.cc/">on GitHub</a><p>.
   </body>
 </html>
